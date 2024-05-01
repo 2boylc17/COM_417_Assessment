@@ -28,7 +28,7 @@ def display(sid):
     cursor.execute(sql_query)
     orders = cursor.fetchall()
     if orders:
-        print("{0:8}{1:12}{2:80}{3:30}{4:20}{5:10}".format('OrderID', 'Order Date',
+        print("{0:10}{1:13}{2:80}{3:30}{4:20}{5:10}".format('OrderID', 'Order Date',
                                                            'Product Description', 'Seller', 'Price', 'Qty Status'))
         for num in orders:
             orderid = num[0]
@@ -37,7 +37,7 @@ def display(sid):
             seller = num[3]
             price = num[4]
             status = num[5]
-            print('{0:8}{1:12}{2:80}{3:30}{4:20}{5:10}'.format(orderid, date, description, seller, price, status))
+            print('{0:<10}{1:13}{2:80}{3:30}{4:20}{5:10}'.format(orderid, date, description, seller, price, status))
     else:
         print("No orders placed by this customer")
     input()

@@ -1,5 +1,8 @@
 import sqlite3
 from Option1 import display
+from Option2 import add_item
+from Option3 import display_basket
+from Option4 import change
 
 db = sqlite3.connect('C:/Users/cpboy/Desktop/University/COM 417/parana.db')
 cursor = db.cursor()
@@ -40,10 +43,19 @@ def menu(sid):
     cursor.execute(sql_query)
     basket_today = cursor.fetchone()
     print()
-    print(f"Your Current Basket:\n {basket_today}")
+    print(f"Your Current Basket:\n {basket_today[0]}")
     num = input()
     if num == '1':
         display(sid)
+        menu(sid)
+    if num == '2':
+        add_item(sid, basket_today)
+        menu(sid)
+    if num == '3':
+        display_basket(basket_today[0])
+        menu(sid)
+    if num == '4':
+        change(basket_today[0])
         menu(sid)
     if num == '7':
         print("Thank you")
