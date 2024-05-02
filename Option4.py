@@ -11,7 +11,7 @@ def change(basket_id):
     else:
         sqlquery_main = (f"SELECT ROW_NUMBER() OVER(), p.product_description, s.seller_name, b.quantity, PRINTF('£%.2f', b.price), PRINTF('£%.2f', (b.quantity * b.price)) FROM basket_contents b \
                             INNER JOIN products p ON b.product_id = p.product_id \
-                            INNER JOIN sellers s ON b.seller_id = s.seller_id")
+                            INNER JOIN sellers s ON b.seller_id = s.seller_id WHERE b.basket_id = {basket_id}")
         cursor.execute(sqlquery_main)
         contents = cursor.fetchall()
         length = len(contents)
@@ -28,7 +28,7 @@ def change(basket_id):
                 total = num[5]
                 overall = overall + float(total[1:])
                 print('{0:<15}{1:70}{2:30}{3:<10}{4:<10}{5:<10}'.format(row, description, name, quantity, price, total))
-            overall = f"£{overall}"
+            overall = f"£{overall:.2f}"
             print('{0:>143}'.format(overall))
             print()
             correct = False
@@ -47,7 +47,16 @@ def change(basket_id):
                     print("Error: Cannot be below 1")
                 else:
                     correct = True
-            sql_query = f'UPDATE basket_contents SET quantity = {new_quantity} WHERE (SELECT ROW_NUMBER() OVER() FROM basket_contents) = {item_no}'
+            sql_query = f"SELECT product_id FROM basket_contents WHERE basket_id = {basket_id}"
+            cursor.execute(sql_query)
+            products = cursor.fetchall()
+            sql_query = f"SELECT seller_id FROM basket_contents WHERE basket_id = {basket_id}"
+            cursor.execute(sql_query)
+            sellers = cursor.fetchall()
+            r_product = products[int(item_no) - 1][0]
+            r_seller = sellers[int(item_no) - 1][0]
+            print(r_product, r_seller)
+            sql_query = f"UPDATE basket_contents SET quantity = {new_quantity} WHERE basket_id = {basket_id} AND product_id = {r_product} AND seller_id = {r_seller}"
             cursor.execute("PRAGMA foreign_keys=ON")
             cursor.execute(sql_query)
             db.commit()
@@ -65,6 +74,6 @@ def change(basket_id):
                 total = num[5]
                 overall = overall + float(total[1:])
                 print('{0:<15}{1:70}{2:30}{3:<10}{4:<10}{5:<10}'.format(row, description, name, quantity, price, total))
-            overall = f"£{overall}"
+            overall = f"£{overall:.2f}"
             print('{0:>143}'.format(overall))
             input()
