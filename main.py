@@ -13,9 +13,11 @@ cursor = db.cursor()
 def start():
     print("What is your shopper ID?")
     shopperid = input()
+    # Retrieves inputted shopper ID from database
     sql_query = f"SELECT shopper_id FROM shoppers WHERE shopper_id = {shopperid}"
     cursor.execute(sql_query)
     row = cursor.fetchone()
+    # Checks if shopper ID inputted exists
     if row:
         sql_query = f"SELECT shopper_first_name, shopper_surname FROM shoppers WHERE shopper_id = {row[0]}"
         cursor.execute(sql_query)
@@ -28,6 +30,7 @@ def start():
 
 
 def menu(sid):
+    # Displays a menu of all available options
     print(f"\nWhat would you like to do?\n"
           f"[1] - Display your order history\n"
           f"[2] - Add an item to your basket\n"
@@ -36,6 +39,7 @@ def menu(sid):
           f"[5] - Remove an item from your basket\n"
           f"[6] - Checkout\n"
           f"[7] - Exit")
+    # Retrieves basket if one was created today
     sql_query = f"SELECT basket_id \
     FROM shopper_baskets \
     WHERE shopper_id = {sid} \
@@ -45,10 +49,12 @@ def menu(sid):
     cursor.execute(sql_query)
     basket_today = cursor.fetchone()
     print()
+    # Displays basket if there is one
     if basket_today is None:
         print("Your current basket is empty")
     else:
         print(f"Your Current Basket:\n {basket_today[0]}")
+    # Allows a menu option to be selected - different files used for ease of use and readability
     num = input()
     if num == '1':
         display(sid)
@@ -71,6 +77,8 @@ def menu(sid):
     if num == '7':
         print("Thank you")
         exit()
+    else:
+        print("Error: no correct input detected")
 
 
 start()

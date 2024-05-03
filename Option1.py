@@ -5,7 +5,7 @@ cursor = db.cursor()
 
 
 def display(sid):
-    print()
+    # Retrieves all orders made by the current shopper
     sql_query = (f"\
         SELECT o.order_id AS [Order ID],\
         STRFTIME('%d-%m-%Y', so.order_date) AS [Order Date],\
@@ -27,9 +27,10 @@ def display(sid):
     ")
     cursor.execute(sql_query)
     orders = cursor.fetchall()
+    # checks if there are any orders by seeing if 'orders' has a value
     if orders:
         print("{0:10}{1:13}{2:80}{3:30}{4:20}{5:10}".format('OrderID', 'Order Date',
-                                                           'Product Description', 'Seller', 'Price', 'Qty Status'))
+                                                            'Product Description', 'Seller', 'Price', 'Qty Status'))
         for num in orders:
             orderid = num[0]
             date = num[1]
@@ -40,4 +41,6 @@ def display(sid):
             print('{0:<10}{1:13}{2:80}{3:30}{4:20}{5:10}'.format(orderid, date, description, seller, price, status))
     else:
         print("No orders placed by this customer")
+    # These are used at the end of all functions to allow the user to
+    # read the information presented before returning to menu
     input()
